@@ -1,0 +1,57 @@
+{% include "store/base.html" %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+    .form-container {
+        margin-top: 50px;
+    }
+    .form-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+    }
+    .form-card h3 {
+        font-weight: bold;
+        color: #007bff;
+    }
+    .form-card h5 {
+        color: #6c757d;
+    }
+    .btn-custom {
+        background-color: #007bff;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-size: 18px;
+    }
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<body>
+    <div class="container form-container">
+        <div class="card form-card">
+            <h3>Quản lý vận chuyển</h3>
+            <hr>
+            <h5>Vui lòng điền vào địa chỉ giao hàng của bạn.</h5>
+            <br><br>
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-custom btn-lg w-100">Cập nhật địa chỉ giao hàng</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

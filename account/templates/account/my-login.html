@@ -1,0 +1,70 @@
+{% include "store/base.html" %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+    .form-container {
+        margin-top: 50px;
+    }
+    .form-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+    }
+    .form-card h4, .form-card h6 {
+        color: #007bff;
+    }
+    .form-card h4 {
+        font-weight: bold;
+    }
+    .form-card h6 {
+        color: #6c757d;
+        margin-bottom: 30px;
+    }
+    .btn-custom {
+        background-color: #007bff;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-size: 18px;
+    }
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+    .link {
+        display: block;
+        margin-top: 20px;
+        color: #007bff;
+    }
+    .link:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+</style>
+
+<body>
+    <div class="container form-container">
+        <div class="card form-card">
+            <h4><i class="fa fa-key" aria-hidden="true"></i>&nbsp; Đăng nhập vào tài khoản của bạn</h4>
+            <h6>Hãy mua những món đồ bạn yêu thích ngay hôm nay!</h6>
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-custom btn-lg w-100"><i class="fa fa-key" aria-hidden="true"></i>&nbsp;Đăng nhập</button>
+                <div class="text-center">
+                    <a href="{% url 'register' %}" class="link">Tạo tài khoản?</a>
+                    <a href="{% url 'reset_password' %}" class="link">Quên mật khẩu?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

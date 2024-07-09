@@ -1,0 +1,58 @@
+{% include "store/base.html" %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+    .content-container {
+        margin-top: 50px;
+    }
+    .header-card, .order-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+    .header-card h2, .order-card h3 {
+        font-weight: bold;
+        color: #007bff;
+    }
+    .order-card p {
+        color: #6c757d;
+    }
+    .order-card hr {
+        border-top: 1px solid #e9ecef;
+    }
+    .icon-header {
+        color: #007bff;
+        font-size: 24px;
+        vertical-align: middle;
+    }
+</style>
+
+<body>
+    <div class="container content-container">
+        <div class="card header-card text-center">
+            <h2><i class="fa fa-list-alt icon-header" aria-hidden="true"></i>&nbsp;Đơn đặt hàng của tôi</h2>
+            <hr>
+        </div>
+
+        {% for order in orders %}
+            <div class="card order-card">
+                <h3>Mã đơn hàng #{{ order.id }}</h3>
+                <p><strong>Sản phẩm:</strong> {{ order.product }}</p>
+                <p><strong>Số lượng:</strong> x {{ order.quantity }}</p>
+                <p><strong>Giá:</strong> $ {{ order.price }}</p>
+                <hr>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+
+{% endblock %}

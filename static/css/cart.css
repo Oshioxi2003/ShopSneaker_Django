@@ -1,0 +1,55 @@
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.product-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+.form-select {
+    display: inline-block;
+    width: auto;
+}
+
+.update-button, .delete-button {
+    margin-top: 20px;
+}
+
+.shadow-sm {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.rounded {
+    border-radius: .25rem;
+}
+
+a.text-info {
+    color: #17a2b8;
+}
+
+a.text-info:hover {
+    color: #138496;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}

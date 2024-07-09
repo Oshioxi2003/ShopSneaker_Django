@@ -1,0 +1,13 @@
+{% autoescape off %}
+
+Xin chào,
+
+Cảm ơn bạn đã đăng ký trên trang web của chúng tôi.
+
+Vui lòng xác minh email của bạn bằng cách nhấp vào liên kết bên dưới:
+
+http://{{domain}}{% url 'email-verification' uidb64=uid token=token %}
+
+{% endautoescape %}
+
+

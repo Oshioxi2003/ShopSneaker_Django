@@ -1,0 +1,118 @@
+<!-- cart-summary.html -->
+{% include "store/base.html" %}
+{% load static %}
+{% block content %}
+<main class="pt-5">
+    <div class="container">
+        <h1 class="h5 mb-4">Giỏ hàng</h1>
+        <hr>
+        {% for item in cart %}
+        {% load mathfilters %}
+        {% with product=item.product %}
+        <div class="row mb-4 border product-item p-3 shadow-sm rounded">
+            <div class="col-md-3 col-lg-2 order-md-first bg-light d-flex align-items-center">
+                <img class="img-fluid mx-auto d-block" width="200px" alt="Responsive image" src="{{ product.image.url}}">
+            </div>
+            <div class="col-md-9 col-lg-10 ps-md-3 ps-lg-10">
+                <a href="{{ product.get_absolute_url}}" class="text-info text-decoration-none">
+                    <h1 class="h5 pt-2">{{ product.title }}</h1>
+                </a>
+                <div class="border p-3 bg-white">
+                    <div class="col border-bottom pb-2 mb-2">
+                        <div class="row">
+                            <div class="col-6">Sản phẩm</div>
+                            <div class="col-6 text-end">
+                                <span class="h6 fw-bold">${{ product.price|mul:item.qty }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="select{{ product.id }}{{ item.size }}" class="form-label">Số lượng</label>
+                                <select id="select{{ product.id }}{{ item.size }}" class="form-select d-inline w-auto">
+                                    <option selected>{{ item.qty }}</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="size-select{{ product.id }}{{ item.size }}" class="form-label">Size</label>
+                                <select id="size-select{{ product.id }}{{ item.size }}" class="form-select d-inline w-auto">
+                                    {% for size in product.sizes.all %}
+                                        <option value="{{ size.name }}" {% if size.name == item.size %}selected{% endif %}>{{ size.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <button type="button" data-index="{{ product.id }}" data-size="{{ item.size }}" class="btn btn-primary btn-sm update-button">Cập nhật</button>
+                                <button type="button" data-index="{{ product.id }}" data-size="{{ item.size }}" class="btn btn-danger btn-sm delete-button">Xoá</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+        {% endfor %}
+        <div class="col-12 text-end">
+            <div class="h6 fw-bold">Tổng tiền: $<span id="total">{{ cart.get_total }}</span></div>
+            <a href="{% url 'checkout' %}" class="btn btn-primary my-2"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i>&nbsp; Tiến hành kiểm tra</a>
+        </div>
+    </div>
+</main>
+
+<script>
+    $(document).on('click', '.delete-button', function(e) {
+        e.preventDefault();
+        var productId = $(this).data('index');
+        var size = $(this).data('size');
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart-delete" %}',
+            data: {
+                product_id: productId,
+                product_size: size,
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                action: 'post'
+            },
+            success: function(json) {
+                location.reload();
+                document.getElementById("cart-qty").textContent = json.qty;
+                document.getElementById("total").textContent = json.total;
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(errmsg);
+            }
+        });
+    });
+
+    $(document).on('click', '.update-button', function(e) {
+        e.preventDefault();
+        var productId = $(this).data('index');
+        var size = $(this).data('size');
+        var qty = $('#select' + productId + size + ' option:selected').val();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart-update" %}',
+            data: {
+                product_id: productId,
+                product_quantity: qty,
+                product_size: size,
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                action: 'post'
+            },
+            success: function(json) {
+                location.reload(true);
+                document.getElementById("cart-qty").textContent = json.qty;
+                document.getElementById("total").textContent = json.total;
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(errmsg);
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+<!-- product-info.html -->
+{% extends "./base.html" %}
+{% load static %}
+{% block content %}
+<div class="container my-5">
+    <main class="pt-5">
+        <div class="row g-4">
+            <div class="col-md-6 order-md-first bg-light p-4 rounded shadow-sm">
+                <img class="img-fluid mx-auto d-block rounded" alt="Responsive image" src="{{ product.image.url }}">
+            </div>
+            <div class="col-md-6 ps-md-4">
+                <h1 class="mb-3 h3 text-primary">{{ product.title }}</h1>
+                <h2 class="mb-3 h6 text-muted">Loại: {{ product.brand }}</h2>
+                <hr>
+                <p class="mb-4">{{ product.description }}</p>
+                <div class="p-3 border rounded shadow-sm bg-white">
+                    <div class="d-flex justify-content-between border-bottom pb-3">
+                        <span class="fw-bold">Giá</span>
+                        <span class="h4 fw-bold text-danger">$ {{ product.price }}</span>
+                    </div>
+                    <div class="pt-3">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <label for="select" class="form-label me-2">Số lượng</label>
+                                <select id="select" class="form-select d-inline-block w-auto">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="size-select" class="form-label me-2">Size</label>
+                                <select id="size-select" class="form-select d-inline-block w-auto">
+                                    {% for size in product.sizes.all %}
+                                        <option value="{{ size.name }}">{{ size.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" id="add-button" value="{{ product.id}}" class="btn btn-primary btn-sm">Thêm vào giỏ hàng</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Related products section -->
+    <section class="related-products my-5">
+        <h2 class="h4 mb-4">Sản phẩm liên quan</h2>
+        <div class="row">
+            {% for related_product in related_products %}
+            <div class="col-md-3">
+                <div class="card h-100">
+                    <img class="card-img-top" src="{{ related_product.image.url }}" alt="{{ related_product.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ related_product.title }}</h5>
+                        <p class="card-text">${{ related_product.price }}</p>
+                        <a href="{{ related_product.get_absolute_url }}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+<script>
+    $(document).on('click', '#add-button', function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url "cart-add" %}',
+            data: {
+                product_id: $('#add-button').val(),
+                product_quantity: $('#select option:selected').text(),
+                product_size: $('#size-select option:selected').val(),
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                action: 'post'
+            },
+            success: function(json){
+                document.getElementById("cart-qty").textContent = json.qty;
+            },
+            error: function(xhr, errmsg, err){
+                console.log(errmsg);
+            }
+        });
+    });
+</script>
+{% endblock %}

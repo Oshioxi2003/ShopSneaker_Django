@@ -1,0 +1,71 @@
+{% include "store/base.html" %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+    .form-container {
+        margin-top: 50px;
+    }
+    .form-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        margin-bottom: 30px;
+    }
+    .form-card h3 {
+        font-weight: bold;
+        color: #007bff;
+    }
+    .form-card p {
+        color: #6c757d;
+    }
+    .form-card .btn-custom {
+        background-color: #007bff;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-size: 18px;
+    }
+    .form-card .btn-custom:hover {
+        background-color: #0056b3;
+    }
+    .icon-header {
+        color: #007bff;
+        font-size: 24px;
+        vertical-align: middle;
+    }
+</style>
+
+<body>
+    <div class="container form-container">
+        <div class="card form-card">
+            <h3><i class="fa fa-address-book icon-header" aria-hidden="true"></i> &nbsp; Quản lý hồ sơ</h3>
+        </div>
+
+        <div class="card form-card">
+            <h3>Cập nhật tài khoản của bạn</h3>
+            <hr>
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+                {{ user_form|crispy }}
+                <button type="submit" class="btn btn-custom btn-lg w-100">Cập nhật tài khoản của bạn</button>
+            </form>
+        </div>
+
+        <div class="card form-card">
+            <h3>Cập nhật tài khoản của bạn</h3>
+            <hr>
+            <p>Tiếp tục nếu bạn muốn xóa tài khoản của mình.</p>
+            <a class="btn btn-danger btn-lg w-100" href="{% url 'delete-account' %}">Xóa tài khoản</a>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

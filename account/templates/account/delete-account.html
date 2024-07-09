@@ -1,0 +1,51 @@
+{% include "store/base.html" %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+
+
+{% block content %}
+<style>
+    body{
+
+        background-color: gray;
+    }
+
+</style>
+
+    <body>
+
+        <br>
+
+        <div class="container bg-white shadow-md p-5 form-layout">
+
+            <h3><i class="fa fa-times-circle" aria-hidden="true"  style="color: red;"></i>&nbsp;Xóa tài khoản</h3>
+
+            <hr>
+
+            <form method="POST" autocomplete="off" >
+
+                {% csrf_token %}
+
+                <p> Bạn có chắc chắn muốn xóa tài khoản của mình không?</p>
+
+                <button type="submit" class="btn btn-danger btn-lg w-100 btn-block p-2"> &nbsp;Xóa tài khoản của bạn</button>
+
+                &nbsp;<br>
+
+                <a class="btn btn-success navbar-btn text-white w-100 p-2 btn-lg" type="button"  href="{% url 'profile-management' %}"> Quay lại! </a>
+
+            </form>
+
+
+        </div>
+
+
+
+
+    </body>
+
+
+{% endblock %}

@@ -1,0 +1,87 @@
+{% include "store/base.html" %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+    }
+    .dashboard-container {
+        margin-top: 50px;
+    }
+    .card {
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    .card-body {
+        padding: 30px;
+    }
+    .card-title {
+        font-weight: bold;
+        color: #007bff;
+    }
+    .card-text {
+        font-size: 16px;
+        color: #6c757d;
+    }
+    .btn-custom {
+        background-color: #007bff;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+    }
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<body>
+    <div class="container dashboard-container">
+        <div class="text-center mb-5">
+            <h3>Chào mừng, {{user}}!</h3>
+            <p class="text-muted">Đây là bảng điều khiển của bạn, nơi bạn có thể thực hiện các công việc sau:</p>
+            <ul class="list-unstyled">
+                <li>Theo dõi đơn hàng của bạn</li>
+                <li>Quản lý tài khoản của bạn</li>
+                <li>Đăng xuất khỏi tài khoản</li>
+            </ul>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">Theo dõi đơn hàng của bạn</h4>
+                        <p class="card-text">Theo dõi tất cả các đơn hàng của bạn tại đây...</p>
+                        <a class="btn btn-custom text-white" href="{% url 'track-orders' %}">Đơn hàng của tôi</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">Quản lý tài khoản của bạn</h4>
+                        <p class="card-text">Cập nhật hoặc xóa tài khoản của bạn</p>
+                        <a class="btn btn-custom text-white" href="{% url 'profile-management' %}">Quản lý hồ sơ</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">Quản lý vận chuyển</h4>
+                        <p class="card-text">Nhập địa chỉ vận chuyển</p>
+                        <a class="btn btn-custom text-white" href="{% url 'manage-shipping' %}">Quản lý vận chuyển</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
