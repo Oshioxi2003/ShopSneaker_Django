@@ -41,13 +41,13 @@
 ## 🚀 Cài Đặt Nhanh
 
 ### Yêu Cầu Hệ Thống
-- Python 3.8+
+- Python 3.10+
 - Django 5.0.6
 - SQLite (development) / PostgreSQL (production)
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/username/ShopSneaker_Django.git
+git clone https://github.com/Oshioxi2003/ShopSneaker_Django
 cd ShopSneaker_Django
 ```
 
