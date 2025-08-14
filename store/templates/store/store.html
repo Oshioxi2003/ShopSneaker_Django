@@ -1,103 +1,269 @@
 
 {% extends "./base.html" %}
-
 {% load static %}
-
+{% load i18n %}
 
 {% block content %}
-    <!-- Introduction section -->
-    <section id="carouselSection">
-        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <a href="{% url 'store' %}">
-                        <img src="{% static 'media/banner_slider/1.svg' %}" class="d-block w-100" alt="...">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block"></div>
-                </div>
-                <div class="carousel-item">
-                    <a href="{% url 'store' %}">
-                        <img src="{% static 'media/banner_slider/2.svg' %}" class="d-block w-100" alt="...">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block"></div>
-                </div>
-                <div class="carousel-item">
-                    <a href="{% url 'store' %}">
-                        <img src="{% static 'media/banner_slider/3.svg' %}" class="d-block w-100" alt="...">
-                    </a>
-                    <div class="carousel-caption d-none d-md-block"></div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-    </section>
 
-
-
-    <!-- All products section -->
-      
-    <div class="album py-5 bg-light">
-        
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-overlay">
         <div class="container">
-    
-          <div class="pb-3 h5"> Tất cả sản phẩm </div>
-
-
-          <hr>
-
-          <br>
-          
-
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
-    
-            {% for product in my_products %}
-    
-              <div class="col">
-                
-                <div class="card shadow-sm">
-                  
-                  <img class="img-fluid" style="height: 300px" alt="Responsive image" src="{{product.image.url}}">
-                  
-                  <div class="card-body">
-                    
-                    <p class="card-text">
-                      
-                      <a class="text-info text-decoration-none" href="{{ product.get_absolute_url}}">{{product.title | capfirst}} </a>
-                    
-                    </p>
-                    
-                    <div class="d-flex justify-content-between align-items-center">
-                      
-                      <h5> ${{product.price}} </h5>
-                    
+            <div class="row align-items-center min-vh-75">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">{% trans "Sneaker Collection 2024" %}</h1>
+                        <p class="hero-subtitle">{% trans "Discover the latest sneaker collection from world's leading brands" %}</p>
+                        <div class="hero-buttons">
+                            <a href="#products" class="btn btn-primary btn-lg me-3">{% trans "Shop Now" %}</a>
+                            <a href="#categories" class="btn btn-outline-light btn-lg">{% trans "Explore" %}</a>
+                        </div>
                     </div>
-                  
-                  </div>
-                
                 </div>
-              
-              </div>
-
-            {% endfor %}
-    
-            
-    
-          </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="{% static 'media/images/shoe.jpg' %}" alt="Featured Sneaker" class="img-fluid floating-shoe">
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
+</section>
 
+<!-- Featured Categories -->
+<section id="categories" class="featured-categories py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">{% trans "Product Categories" %}</h2>
+            <p class="section-subtitle">{% trans "Find by your favorite category" %}</p>
+        </div>
+        <div class="row g-4">
+            {% for category in all_categories %}
+            <div class="col-lg-4 col-md-6">
+                <div class="category-card">
+                    <div class="category-image">
+                        <img src="{% static 'media/images/shoes-1.jpg' %}" alt="{{ category.name }}" class="img-fluid">
+                        <div class="category-overlay">
+                            <div class="category-content">
+                                <h4>{{ category.name|capfirst }}</h4>
+                                <a href="{{ category.get_absolute_url }}" class="btn btn-outline-light">{% trans "View More" %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Best Sellers -->
+<section class="best-sellers py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">{% trans "Best Sellers" %}</h2>
+            <p class="section-subtitle">{% trans "Most loved sneakers" %}</p>
+        </div>
+        <div class="row g-4">
+            {% for product in featured_products %}
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.title }}" class="img-fluid">
+                        {% else %}
+                            <img src="{% static 'media/images/shoe.jpg' %}" alt="{{ product.title }}" class="img-fluid">
+                        {% endif %}
+                        <div class="product-overlay">
+                            <div class="product-actions">
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm">{% trans "View Details" %}</a>
+                            </div>
+                        </div>
+                        {% if product.is_on_sale %}
+                        <span class="product-badge sale-badge">Sale</span>
+                        {% elif product.is_new %}
+                        <span class="product-badge new-badge">New</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">
+                            <a href="{{ product.get_absolute_url }}">{{ product.title|capfirst }}</a>
+                        </h5>
+                        <p class="product-brand">{{ product.brand.name }}</p>
+                        <div class="product-price">
+                            <span class="current-price">${{ product.price }}</span>
+                        </div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span class="rating-count">(24)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- New Arrivals -->
+<section id="products" class="new-arrivals py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">{% trans "New Arrivals" %}</h2>
+            <p class="section-subtitle">{% trans "Latest sneaker models from top brands" %}</p>
+        </div>
+        <div class="row g-4">
+            {% for product in my_products|slice:":8" %}
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card">
+                    <div class="product-image">
+                        {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.title }}" class="img-fluid">
+                        {% else %}
+                            <img src="{% static 'media/images/shoe.jpg' %}" alt="{{ product.title }}" class="img-fluid">
+                        {% endif %}
+                        <div class="product-overlay">
+                            <div class="product-actions">
+                                <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm">{% trans "View Details" %}</a>
+                            </div>
+                        </div>
+                        <span class="product-badge new-badge">New</span>
+                    </div>
+                    <div class="product-info">
+                        <h5 class="product-title">
+                            <a href="{{ product.get_absolute_url }}">{{ product.title|capfirst }}</a>
+                        </h5>
+                        <p class="product-brand">{{ product.brand.name }}</p>
+                        <div class="product-price">
+                            <span class="current-price">${{ product.price }}</span>
+                        </div>
+                        <div class="product-rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span class="rating-count">(15)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <a href="{% url 'store' %}" class="btn btn-outline-primary btn-lg">{% trans "View All Products" %}</a>
+        </div>
+    </div>
+</section>
+
+<!-- Brand Showcase -->
+<section class="brand-showcase py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">{% trans "Brand Partners" %}</h2>
+            <p class="section-subtitle">{% trans "We partner with world's leading brands" %}</p>
+        </div>
+        <div class="row align-items-center">
+            <div class="col-lg-2 col-md-4 col-6 text-center">
+                <div class="brand-logo">
+                    <img src="{% static 'media/logo40x40.svg' %}" alt="Nike" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 text-center">
+                <div class="brand-logo">
+                    <img src="{% static 'media/logo40x40.svg' %}" alt="Adidas" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 text-center">
+                <div class="brand-logo">
+                    <img src="{% static 'media/logo40x40.svg' %}" alt="Puma" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 text-center">
+                <div class="brand-logo">
+                    <img src="{% static 'media/logo40x40.svg' %}" alt="Converse" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 text-center">
+                <div class="brand-logo">
+                    <img src="{% static 'media/logo40x40.svg' %}" alt="Vans" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6 text-center">
+                <div class="brand-logo">
+                    <img src="{% static 'media/logo40x40.svg' %}" alt="Jordan" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="newsletter-title">{% trans "Subscribe to Newsletter" %}</h2>
+                <p class="newsletter-subtitle">{% trans "Get updates on new products and special offers" %}</p>
+                <form class="newsletter-form">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="{% trans "Enter your email..." %}">
+                        <button class="btn btn-primary" type="submit">{% trans "Subscribe" %}</button>
+                    </div>
+                </form>
+                <p class="newsletter-note">{% trans "We respect your privacy and don't spam" %}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-item text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h5>{% trans "Free Shipping" %}</h5>
+                    <p>{% trans "Free shipping on orders over $50" %}</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-item text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <h5>{% trans "Easy Returns" %}</h5>
+                    <p>{% trans "30-day return policy" %}</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-item text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5>{% trans "Secure Payment" %}</h5>
+                    <p>{% trans "100% secure payment information" %}</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-item text-center">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h5>{% trans "24/7 Support" %}</h5>
+                    <p>{% trans "Customer service team always ready" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}
 

@@ -1,0 +1,169 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ShopSneaker\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 12:00+0700\n"
+"PO-Revision-Date: 2024-01-01 12:00+0700\n"
+"Last-Translator: ShopSneaker Team\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: base.html:7
+msgid "Shop Sneaker"
+msgstr "Shop Sneaker"
+
+#: base.html:30
+msgid "News & Events"
+msgstr "News & Events"
+
+#: base.html:38
+msgid "Contact"
+msgstr "Contact"
+
+#: base.html:53
+msgid "Theme"
+msgstr "Theme"
+
+#: base.html:57
+msgid "Light Mode"
+msgstr "Light Mode"
+
+#: base.html:62
+msgid "Dark Mode"
+msgstr "Dark Mode"
+
+#: base.html:91
+msgid "User Profile"
+msgstr "User Profile"
+
+#: base.html:99
+msgid "Register"
+msgstr "Register"
+
+#: base.html:107
+msgid "Logout"
+msgstr "Logout"
+
+#: base.html:115
+msgid "Login"
+msgstr "Login"
+
+#: store.html:15
+msgid "Sneaker Collection 2024"
+msgstr "Sneaker Collection 2024"
+
+#: store.html:16
+msgid "Discover the latest sneaker collection from world's leading brands"
+msgstr "Discover the latest sneaker collection from world's leading brands"
+
+#: store.html:18
+msgid "Shop Now"
+msgstr "Shop Now"
+
+#: store.html:19
+msgid "Explore"
+msgstr "Explore"
+
+#: store.html:31
+msgid "Product Categories"
+msgstr "Product Categories"
+
+#: store.html:32
+msgid "Find by your favorite category"
+msgstr "Find by your favorite category"
+
+#: store.html:52
+msgid "Best Sellers"
+msgstr "Best Sellers"
+
+#: store.html:53
+msgid "Most loved sneakers"
+msgstr "Most loved sneakers"
+
+#: store.html:95
+msgid "New Arrivals"
+msgstr "New Arrivals"
+
+#: store.html:96
+msgid "Latest sneaker models from top brands"
+msgstr "Latest sneaker models from top brands"
+
+#: store.html:138
+msgid "View All Products"
+msgstr "View All Products"
+
+#: store.html:148
+msgid "Brand Partners"
+msgstr "Brand Partners"
+
+#: store.html:149
+msgid "We partner with world's leading brands"
+msgstr "We partner with world's leading brands"
+
+#: store.html:189
+msgid "Subscribe to Newsletter"
+msgstr "Subscribe to Newsletter"
+
+#: store.html:190
+msgid "Get updates on new products and special offers"
+msgstr "Get updates on new products and special offers"
+
+#: store.html:194
+msgid "Enter your email..."
+msgstr "Enter your email..."
+
+#: store.html:195
+msgid "Subscribe"
+msgstr "Subscribe"
+
+#: store.html:197
+msgid "We respect your privacy and don't spam"
+msgstr "We respect your privacy and don't spam"
+
+#: store.html:208
+msgid "Free Shipping"
+msgstr "Free Shipping"
+
+#: store.html:209
+msgid "Free shipping on orders over $50"
+msgstr "Free shipping on orders over $50"
+
+#: store.html:216
+msgid "Easy Returns"
+msgstr "Easy Returns"
+
+#: store.html:217
+msgid "30-day return policy"
+msgstr "30-day return policy"
+
+#: store.html:224
+msgid "Secure Payment"
+msgstr "Secure Payment"
+
+#: store.html:225
+msgid "100% secure payment information"
+msgstr "100% secure payment information"
+
+#: store.html:232
+msgid "24/7 Support"
+msgstr "24/7 Support"
+
+#: store.html:233
+msgid "Customer service team always ready"
+msgstr "Customer service team always ready"
+
+#: store.html:44
+msgid "View More"
+msgstr "View More"
+
+#: store.html:67
+msgid "View Details"
+msgstr "View Details" 

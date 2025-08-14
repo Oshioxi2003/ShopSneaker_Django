@@ -1,19 +1,20 @@
 {% load static %}
+{% load i18n %}
 
 <!DOCTYPE html>
 
-<html>
+<html lang="{{ LANGUAGE_CODE }}" data-theme="{{ current_theme }}">
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <title> Shop Sneaker </title>
+	    <title>{% trans "Shop Sneaker" %}</title>
         <link rel="icon" href="{% static 'media/icon.jpg' %}" type="logo">
 
         <!-- CSS -->
         
         <link rel="stylesheet" href="https://bootswatch.com/5/flatly/bootstrap.min.css">
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
@@ -40,7 +41,7 @@
         <a class="navbar-brand main-heading text-white" href="{% url 'store' %}"> 
                 
         &nbsp; &nbsp; 
-            <img src="{% static 'media/logo40x40.svg' %}"> Shop Sneaker
+            <img src="{% static 'media/logo40x40.svg' %}"> {% trans "Shop Sneaker" %}
         
         </a>
 
@@ -73,7 +74,7 @@
                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     
-                        Tin tức - sự kiện
+                        {% trans "News & Events" %}
                     
                     </a>
                 </li>
@@ -82,7 +83,7 @@
                     <a class="nav-link text-white" href="#" id="navbarDropdown" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
                     
-                        Liên hệ 
+                        {% trans "Contact" %}
                     
                     </a>
                 </li>
@@ -96,13 +97,73 @@
             
             <ul class="navbar-nav ms-auto">
 
-                <!-- Dashborad / register -->
+                <!-- Theme Switcher -->
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="themeDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        {% if current_theme == 'dark' %}
+                            <i class="fas fa-moon"></i>
+                        {% else %}
+                            <i class="fas fa-sun"></i>
+                        {% endif %}
+                        <span class="d-none d-lg-inline">{% trans "Theme" %}</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="themeDropdown">
+                        <li>
+                            <a class="dropdown-item" href="?theme=light">
+                                <i class="fas fa-sun me-2"></i>{% trans "Light Mode" %}
+                                {% if current_theme == 'light' %}<i class="fas fa-check ms-2 text-success"></i>{% endif %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="?theme=dark">
+                                <i class="fas fa-moon me-2"></i>{% trans "Dark Mode" %}
+                                {% if current_theme == 'dark' %}<i class="fas fa-check ms-2 text-success"></i>{% endif %}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Language Switcher -->
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="languageDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-globe"></i>
+                        <span class="d-none d-lg-inline">
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {% if LANGUAGE_CODE == 'vi' %}Tiếng Việt{% else %}English{% endif %}
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% for lang_code, lang_name in LANGUAGES %}
+                        <li>
+                            <form action="{% url 'set_language' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.get_full_path }}" />
+                                <input name="language" type="hidden" value="{{ lang_code }}" />
+                                <button type="submit" class="dropdown-item" style="border: none; background: none; width: 100%; text-align: left;">
+                                    {% if lang_code == 'vi' %}
+                                        <i class="fas fa-flag me-2" style="color: #da251d;"></i>Tiếng Việt
+                                    {% else %}
+                                        <i class="fas fa-flag me-2" style="color: #012169;"></i>English
+                                    {% endif %}
+                                    {% if LANGUAGE_CODE == lang_code %}<i class="fas fa-check ms-2 text-success"></i>{% endif %}
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+
+                <!-- Dashboard / register -->
 
                 {% if user.is_authenticated %}
 
                     <li class="nav-item">
                 
-                        <a class="btn btn-alert navbar-btn text-white" type="button"  href="{% url 'dashboard' %}"><i class="fa fa-cogs" aria-hidden="true"></i></i>&nbsp; Thông tin người dùng </a>
+                        <a class="btn btn-alert navbar-btn text-white" type="button"  href="{% url 'dashboard' %}"><i class="fa fa-cogs" aria-hidden="true"></i></i>&nbsp; {% trans "User Profile" %} </a>
 
                     </li>
 
@@ -110,7 +171,7 @@
 
                     <li class="nav-item">
                 
-                        <a class="btn btn-alert navbar-btn text-white" type="button"  href="{% url 'register' %}"><i class="fa fa-user-plus" aria-hidden="true"></i>&nbsp; Tạo tài khoản </a>
+                        <a class="btn btn-alert navbar-btn text-white" type="button"  href="{% url 'register' %}"><i class="fa fa-user-plus" aria-hidden="true"></i>&nbsp; {% trans "Register" %} </a>
 
                     </li>
 
@@ -121,7 +182,7 @@
 
                     <li class="nav-item">
 
-                        <a class="btn btn-alert navbar-btn text-white" type="button"  href="{% url 'user-logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp; Đăng xuất </a>
+                        <a class="btn btn-alert navbar-btn text-white" type="button"  href="{% url 'user-logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp; {% trans "Logout" %} </a>
 
                     </li>
 
@@ -129,7 +190,7 @@
 
                     <li class="nav-item">
 
-                        <a class="btn btn-alert navbar-btn text-white" type="button"  href="{% url 'my-login' %}"><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp; Đăng nhập </a>
+                        <a class="btn btn-alert navbar-btn text-white" type="button"  href="{% url 'my-login' %}"><i class="fa fa-sign-in" aria-hidden="true"></i>&nbsp; {% trans "Login" %} </a>
 
                     </li>
                 
@@ -209,7 +270,7 @@
 
     {% endfor %}
 
-    <body>
+    <body class="theme-{{ current_theme }}">
 
 
         {% block content %} 
@@ -224,6 +285,47 @@
 
 
     <script src="{% static 'js/app.js' %}"></script>
+
+    <!-- Theme Script -->
+    <script>
+        // Theme switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply theme immediately
+            applyTheme('{{ current_theme }}');
+            
+            // Theme switch handlers
+            document.querySelectorAll('[href*="theme="]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const url = new URL(this.href);
+                    const theme = url.searchParams.get('theme');
+                    switchTheme(theme);
+                });
+            });
+        });
+
+        function switchTheme(theme) {
+            // Update data attribute
+            document.documentElement.setAttribute('data-theme', theme);
+            document.body.className = document.body.className.replace(/theme-\w+/, 'theme-' + theme);
+            
+            // Store in session
+            fetch(window.location.pathname + '?theme=' + theme, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(() => {
+                // Reload to apply theme
+                window.location.reload();
+            });
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.body.classList.add('theme-' + theme);
+        }
+    </script>
 
 </html>
 

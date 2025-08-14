@@ -1,92 +1,542 @@
 <!-- product-info.html -->
 {% extends "./base.html" %}
 {% load static %}
+
 {% block content %}
 <div class="container my-5">
-    <main class="pt-5">
-        <div class="row g-4">
-            <div class="col-md-6 order-md-first bg-light p-4 rounded shadow-sm">
-                <img class="img-fluid mx-auto d-block rounded" alt="Responsive image" src="{{ product.image.url }}">
-            </div>
-            <div class="col-md-6 ps-md-4">
-                <h1 class="mb-3 h3 text-primary">{{ product.title }}</h1>
-                <h2 class="mb-3 h6 text-muted">Loại: {{ product.brand }}</h2>
-                <hr>
-                <p class="mb-4">{{ product.description }}</p>
-                <div class="p-3 border rounded shadow-sm bg-white">
-                    <div class="d-flex justify-content-between border-bottom pb-3">
-                        <span class="fw-bold">Giá</span>
-                        <span class="h4 fw-bold text-danger">$ {{ product.price }}</span>
+    <!-- Product Detail Section -->
+    <main class="pt-3">
+        <div class="row g-5">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div class="product-gallery">
+                    <!-- Main Image -->
+                    <div class="main-image mb-3">
+                        <img id="mainProductImage" class="img-fluid rounded shadow" 
+                             src="{{ product.main_image.url }}" 
+                             alt="{{ product.title }}"
+                             style="width: 100%; height: 400px; object-fit: cover;">
                     </div>
-                    <div class="pt-3">
-                        <div class="d-flex justify-content-between mb-3">
-                            <div>
-                                <label for="select" class="form-label me-2">Số lượng</label>
-                                <select id="select" class="form-select d-inline-block w-auto">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
+                    
+                    <!-- Thumbnail Gallery -->
+                    {% if product_images %}
+                    <div class="row g-2">
+                        <div class="col-3">
+                            <img class="img-fluid rounded thumbnail-img" 
+                                 src="{{ product.main_image.url }}" 
+                                 alt="{{ product.title }}"
+                                 onclick="changeMainImage('{{ product.main_image.url }}')"
+                                 style="height: 80px; object-fit: cover; cursor: pointer;">
+                        </div>
+                        {% for image in product_images %}
+                        <div class="col-3">
+                            <img class="img-fluid rounded thumbnail-img" 
+                                 src="{{ image.image.url }}" 
+                                 alt="{{ image.alt_text }}"
+                                 onclick="changeMainImage('{{ image.image.url }}')"
+                                 style="height: 80px; object-fit: cover; cursor: pointer;">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="col-md-6">
+                <div class="product-details">
+                    <!-- Title and Brand -->
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'store' %}">Trang chủ</a></li>
+                            <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+                            <li class="breadcrumb-item active">{{ product.title }}</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="product-title h2 mb-2">{{ product.title }}</h1>
+                    <p class="product-brand text-muted mb-3">
+                        <strong>Thương hiệu:</strong> {{ product.brand.name }}
+                    </p>
+                    
+                    <!-- Rating and Reviews -->
+                    <div class="product-rating mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="stars me-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= product.average_rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
-                            <div>
-                                <label for="size-select" class="form-label me-2">Size</label>
-                                <select id="size-select" class="form-select d-inline-block w-auto">
-                                    {% for size in product.sizes.all %}
-                                        <option value="{{ size.name }}">{{ size.name }}</option>
-                                    {% endfor %}
-                                </select>
+                            <span class="rating-value me-2">{{ product.average_rating }}/5</span>
+                            <span class="review-count text-muted">({{ product.review_count }} đánh giá)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Price -->
+                    <div class="product-pricing mb-4">
+                        {% if product.sale_price %}
+                            <span class="original-price text-decoration-line-through text-muted me-2">
+                                ${{ product.original_price }}
+                            </span>
+                            <span class="sale-price h3 text-danger fw-bold">${{ product.sale_price }}</span>
+                            <span class="discount-badge badge bg-danger ms-2">-{{ product.discount_percentage }}%</span>
+                        {% else %}
+                            <span class="current-price h3 text-primary fw-bold">${{ product.original_price }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Stock Status -->
+                    <div class="stock-status mb-3">
+                        {% if product.is_in_stock %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle"></i> Còn {{ product.stock_quantity }} sản phẩm
+                            </span>
+                            {% if product.is_low_stock %}
+                                <span class="badge bg-warning text-dark ms-2">
+                                    <i class="fas fa-exclamation-triangle"></i> Sắp hết hàng
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-danger">
+                                <i class="fas fa-times-circle"></i> Hết hàng
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Product Variants -->
+                    {% if available_sizes or available_colors %}
+                    <form id="variantForm" class="product-variants mb-4">
+                        <!-- Size Selection -->
+                        {% if available_sizes %}
+                        <div class="size-selection mb-3">
+                            <label class="form-label fw-bold">Kích thước:</label>
+                            <div class="size-options">
+                                {% for size in available_sizes %}
+                                <input type="radio" class="btn-check" name="size" id="size{{ size.id }}" value="{{ size.id }}">
+                                <label class="btn btn-outline-primary btn-sm me-2 mb-2" for="size{{ size.id }}">
+                                    {{ size.name }}
+                                    {% if size.us_size %}(US {{ size.us_size }}){% endif %}
+                                </label>
+                                {% endfor %}
                             </div>
                         </div>
-                        <div class="text-end">
-                            <button type="button" id="add-button" value="{{ product.id}}" class="btn btn-primary btn-sm">Thêm vào giỏ hàng</button>
+                        {% endif %}
+                        
+                        <!-- Color Selection -->
+                        {% if available_colors %}
+                        <div class="color-selection mb-3">
+                            <label class="form-label fw-bold">Màu sắc:</label>
+                            <div class="color-options">
+                                {% for color in available_colors %}
+                                <input type="radio" class="btn-check" name="color" id="color{{ color.id }}" value="{{ color.id }}">
+                                <label class="btn btn-outline-secondary btn-sm me-2 mb-2" for="color{{ color.id }}">
+                                    <span class="color-preview" 
+                                          style="display: inline-block; width: 15px; height: 15px; background-color: {{ color.hex_code }}; border-radius: 50%; margin-right: 5px; border: 1px solid #ddd;"></span>
+                                    {{ color.name }}
+                                </label>
+                                {% endfor %}
+                            </div>
                         </div>
+                        {% endif %}
+                        
+                        <!-- Variant Info Display -->
+                        <div id="variantInfo" class="variant-info mb-3" style="display: none;">
+                            <div class="alert alert-info">
+                                <strong>SKU:</strong> <span id="variantSku"></span><br>
+                                <strong>Giá:</strong> $<span id="variantPrice"></span><br>
+                                <strong>Tồn kho:</strong> <span id="variantStock"></span> sản phẩm
+                            </div>
+                        </div>
+                    </form>
+                    {% endif %}
+                    
+                    <!-- Description -->
+                    {% if product.short_description %}
+                    <div class="product-description mb-4">
+                        <h5>Mô tả ngắn:</h5>
+                        <p class="text-muted">{{ product.short_description }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Action Buttons -->
+                    <div class="product-actions mb-4">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <a href="#" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-outline-danger btn-lg w-100" onclick="toggleWishlist({{ product.id }})">
+                                    <i class="{% if in_wishlist %}fas{% else %}far{% endif %} fa-heart"></i> 
+                                    <span id="wishlistText">{% if in_wishlist %}Đã yêu thích{% else %}Yêu thích{% endif %}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Tags -->
+                    {% if product.tags %}
+                    <div class="product-tags mb-3">
+                        <strong>Tags:</strong>
+                        {% for tag in product.tags|split:"," %}
+                            <span class="badge bg-secondary me-1">{{ tag|trim }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Product Info Table -->
+                    <div class="product-specs">
+                        <h5>Thông tin sản phẩm:</h5>
+                        <table class="table table-sm">
+                            <tr>
+                                <td><strong>SKU:</strong></td>
+                                <td>{{ product.sku }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Danh mục:</strong></td>
+                                <td>{{ product.category.name }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thương hiệu:</strong></td>
+                                <td>{{ product.brand.name }}</td>
+                            </tr>
+                            {% if product.weight %}
+                            <tr>
+                                <td><strong>Trọng lượng:</strong></td>
+                                <td>{{ product.weight }} kg</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.length or product.width or product.height %}
+                            <tr>
+                                <td><strong>Kích thước:</strong></td>
+                                <td>{{ product.length|default:"-" }} x {{ product.width|default:"-" }} x {{ product.height|default:"-" }} cm</td>
+                            </tr>
+                            {% endif %}
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
-    <!-- Related products section -->
-    <section class="related-products my-5">
-        <h2 class="h4 mb-4">Sản phẩm liên quan</h2>
-        <div class="row">
-            {% for related_product in related_products %}
-            <div class="col-md-3">
-                <div class="card h-100">
-                    <img class="card-img-top" src="{{ related_product.image.url }}" alt="{{ related_product.title }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ related_product.title }}</h5>
-                        <p class="card-text">${{ related_product.price }}</p>
-                        <a href="{{ related_product.get_absolute_url }}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+    
+    <!-- Product Details Tabs -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab">
+                        Mô tả chi tiết
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                        Đánh giá ({{ product.review_count }})
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab">
+                        Thông số kỹ thuật
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="productTabsContent">
+                <!-- Description Tab -->
+                <div class="tab-pane fade show active" id="description" role="tabpanel">
+                    <div class="p-4">
+                        {% if product.description %}
+                            {{ product.description|linebreaks }}
+                        {% else %}
+                            <p class="text-muted">Chưa có mô tả chi tiết cho sản phẩm này.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Reviews Tab -->
+                <div class="tab-pane fade" id="reviews" role="tabpanel">
+                    <div class="p-4">
+                        <!-- Add Review Form -->
+                        {% if user.is_authenticated and not user_has_reviewed %}
+                        <div class="add-review mb-4">
+                            <h5>Viết đánh giá</h5>
+                            <form method="post" action="{% url 'add-review' product.slug %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label">Đánh giá của bạn:</label>
+                                    <div class="rating-input">
+                                        {% for i in "12345" %}
+                                        <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required>
+                                        <label for="star{{ i }}" class="star-label">
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" class="form-control" name="title" placeholder="Tiêu đề đánh giá" required>
+                                </div>
+                                <div class="mb-3">
+                                    <textarea class="form-control" name="review" rows="4" placeholder="Viết đánh giá của bạn..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+                            </form>
+                        </div>
+                        {% elif not user.is_authenticated %}
+                        <div class="alert alert-info">
+                            <a href="{% url 'my-login' %}">Đăng nhập</a> để viết đánh giá sản phẩm.
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Reviews List -->
+                        <div class="reviews-list">
+                            {% for review in reviews %}
+                            <div class="review-item border-bottom pb-3 mb-3">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ review.title }}</h6>
+                                        <div class="review-rating mb-2">
+                                            {% for i in "12345" %}
+                                                {% if forloop.counter <= review.rating %}
+                                                    <i class="fas fa-star text-warning"></i>
+                                                {% else %}
+                                                    <i class="far fa-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <p class="mb-2">{{ review.review }}</p>
+                                        <small class="text-muted">
+                                            Bởi {{ review.user.username }} - {{ review.created_at|date:"d/m/Y" }}
+                                            {% if review.is_verified_purchase %}
+                                                <span class="badge bg-success ms-2">Đã mua hàng</span>
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p class="text-muted">Chưa có đánh giá nào cho sản phẩm này.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Specifications Tab -->
+                <div class="tab-pane fade" id="specifications" role="tabpanel">
+                    <div class="p-4">
+                        <table class="table">
+                            <tr>
+                                <td width="30%"><strong>SKU</strong></td>
+                                <td>{{ product.sku }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thương hiệu</strong></td>
+                                <td>{{ product.brand.name }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Danh mục</strong></td>
+                                <td>{{ product.category.name }}</td>
+                            </tr>
+                            {% if product.weight %}
+                            <tr>
+                                <td><strong>Trọng lượng</strong></td>
+                                <td>{{ product.weight }} kg</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.length %}
+                            <tr>
+                                <td><strong>Chiều dài</strong></td>
+                                <td>{{ product.length }} cm</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.width %}
+                            <tr>
+                                <td><strong>Chiều rộng</strong></td>
+                                <td>{{ product.width }} cm</td>
+                            </tr>
+                            {% endif %}
+                            {% if product.height %}
+                            <tr>
+                                <td><strong>Chiều cao</strong></td>
+                                <td>{{ product.height }} cm</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td><strong>Tình trạng</strong></td>
+                                <td>
+                                    {% if product.is_in_stock %}
+                                        <span class="badge bg-success">Còn hàng</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Hết hàng</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
-    </section>
+    </div>
+    
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="section-title">Sản phẩm liên quan</h3>
+            <div class="row g-4">
+                {% for product in related_products %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="{{ product.main_image.url }}" alt="{{ product.title }}" class="img-fluid">
+                            <div class="product-overlay">
+                                <div class="product-actions">
+                                    <a href="{{ product.get_absolute_url }}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">
+                                <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
+                            </h5>
+                            <p class="product-brand">{{ product.brand.name }}</p>
+                            <div class="product-price">
+                                {% if product.sale_price %}
+                                    <span class="original-price text-decoration-line-through">${{ product.original_price }}</span>
+                                    <span class="sale-price text-danger fw-bold">${{ product.sale_price }}</span>
+                                {% else %}
+                                    <span class="current-price">${{ product.original_price }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <script>
-    $(document).on('click', '#add-button', function(e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: '{% url "cart-add" %}',
-            data: {
-                product_id: $('#add-button').val(),
-                product_quantity: $('#select option:selected').text(),
-                product_size: $('#size-select option:selected').val(),
-                csrfmiddlewaretoken: "{{ csrf_token }}",
-                action: 'post'
-            },
-            success: function(json){
-                document.getElementById("cart-qty").textContent = json.qty;
-            },
-            error: function(xhr, errmsg, err){
-                console.log(errmsg);
+// Change main product image
+function changeMainImage(imageUrl) {
+    document.getElementById('mainProductImage').src = imageUrl;
+}
+
+// Handle variant selection
+document.addEventListener('DOMContentLoaded', function() {
+    const sizeInputs = document.querySelectorAll('input[name="size"]');
+    const colorInputs = document.querySelectorAll('input[name="color"]');
+    const variantInfo = document.getElementById('variantInfo');
+    
+    function updateVariantInfo() {
+        const selectedSize = document.querySelector('input[name="size"]:checked');
+        const selectedColor = document.querySelector('input[name="color"]:checked');
+        
+        if (selectedSize && selectedColor) {
+            fetch(`/product/{{ product.id }}/variant-info/?size=${selectedSize.value}&color=${selectedColor.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('variantSku').textContent = data.sku;
+                    document.getElementById('variantPrice').textContent = data.price;
+                    document.getElementById('variantStock').textContent = data.stock_quantity;
+                    variantInfo.style.display = 'block';
+                });
+        } else {
+            variantInfo.style.display = 'none';
+        }
+    }
+    
+    sizeInputs.forEach(input => input.addEventListener('change', updateVariantInfo));
+    colorInputs.forEach(input => input.addEventListener('change', updateVariantInfo));
+});
+
+// Rating input styling
+document.querySelectorAll('.rating-input input[type="radio"]').forEach(input => {
+    input.addEventListener('change', function() {
+        const rating = this.value;
+        const labels = document.querySelectorAll('.rating-input .star-label i');
+        
+        labels.forEach((label, index) => {
+            if (index < rating) {
+                label.className = 'fas fa-star text-warning';
+            } else {
+                label.className = 'far fa-star';
             }
         });
     });
+});
+
+// Wishlist toggle
+function toggleWishlist(productId) {
+    fetch(`/wishlist/toggle/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const heartIcon = document.querySelector('button[onclick="toggleWishlist(' + productId + ')"] i');
+        const wishlistText = document.getElementById('wishlistText');
+        
+        if (data.in_wishlist) {
+            heartIcon.className = 'fas fa-heart';
+            wishlistText.textContent = 'Đã yêu thích';
+        } else {
+            heartIcon.className = 'far fa-heart';
+            wishlistText.textContent = 'Yêu thích';
+        }
+        
+        // Show toast message (if you have a toast system)
+        console.log(data.message);
+    });
+}
 </script>
+
+<style>
+.rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rating-input input[type="radio"] {
+    display: none;
+}
+
+.rating-input .star-label {
+    font-size: 1.5rem;
+    color: #ddd;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.rating-input .star-label:hover,
+.rating-input .star-label:hover ~ .star-label {
+    color: #ffc107;
+}
+
+.rating-input input[type="radio"]:checked ~ .star-label {
+    color: #ffc107;
+}
+
+.thumbnail-img:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+</style>
+
 {% endblock %}

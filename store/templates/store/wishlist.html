@@ -1,0 +1,286 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-heart text-danger"></i> Danh sách yêu thích</h2>
+                <span class="badge bg-primary">{{ wishlist_items|length }} sản phẩm</span>
+            </div>
+            
+            {% if wishlist_items %}
+            <div class="row g-4">
+                {% for item in wishlist_items %}
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card position-relative">
+                        <!-- Remove from wishlist button -->
+                        <button class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
+                                style="z-index: 10;" 
+                                onclick="toggleWishlist({{ item.product.id }})"
+                                title="Xóa khỏi danh sách yêu thích">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        
+                        <div class="product-image">
+                            <img src="{{ item.product.main_image.url }}" 
+                                 alt="{{ item.product.title }}" 
+                                 class="img-fluid" 
+                                 style="height: 250px; object-fit: cover;">
+                            <div class="product-overlay">
+                                <div class="product-actions">
+                                    <a href="{{ item.product.get_absolute_url }}" 
+                                       class="btn btn-primary btn-sm">Xem chi tiết</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Product badges -->
+                            {% if item.product.is_on_sale %}
+                            <span class="product-badge sale-badge">Sale</span>
+                            {% elif item.product.is_new %}
+                            <span class="product-badge new-badge">New</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="product-info">
+                            <h5 class="product-title">
+                                <a href="{{ item.product.get_absolute_url }}">{{ item.product.title|capfirst }}</a>
+                            </h5>
+                            <p class="product-brand">{{ item.product.brand.name }}</p>
+                            <div class="product-price">
+                                {% if item.product.sale_price %}
+                                    <span class="original-price text-decoration-line-through text-muted me-2">
+                                        ${{ item.product.original_price }}
+                                    </span>
+                                    <span class="sale-price text-danger fw-bold">${{ item.product.sale_price }}</span>
+                                    <span class="discount-badge badge bg-danger ms-1">
+                                        -{{ item.product.discount_percentage }}%
+                                    </span>
+                                {% else %}
+                                    <span class="current-price fw-bold">${{ item.product.original_price }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Rating -->
+                            <div class="product-rating mt-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= item.product.average_rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-warning"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="rating-count text-muted ms-1">({{ item.product.review_count }})</span>
+                            </div>
+                            
+                            <!-- Stock status -->
+                            <div class="stock-status mt-2">
+                                {% if item.product.is_in_stock %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle"></i> Còn hàng
+                                    </span>
+                                    {% if item.product.is_low_stock %}
+                                        <span class="badge bg-warning text-dark ms-1">
+                                            <i class="fas fa-exclamation-triangle"></i> Sắp hết
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-times-circle"></i> Hết hàng
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Action buttons -->
+                            <div class="product-actions mt-3">
+                                <div class="d-grid gap-2">
+                                    {% if item.product.is_in_stock %}
+                                    <a href="#" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-shopping-cart"></i> Thêm vào giỏ
+                                    </a>
+                                    {% else %}
+                                    <button class="btn btn-secondary btn-sm" disabled>
+                                        <i class="fas fa-ban"></i> Hết hàng
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Added date -->
+                            <small class="text-muted mt-2 d-block">
+                                Đã thêm: {{ item.created_at|date:"d/m/Y" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Actions -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <a href="{% url 'store' %}" class="btn btn-outline-primary me-3">
+                        <i class="fas fa-arrow-left"></i> Tiếp tục mua sắm
+                    </a>
+                    <button class="btn btn-danger" onclick="clearWishlist()">
+                        <i class="fas fa-trash"></i> Xóa tất cả
+                    </button>
+                </div>
+            </div>
+            
+            {% else %}
+            <!-- Empty wishlist -->
+            <div class="text-center py-5">
+                <div class="empty-wishlist">
+                    <i class="far fa-heart display-1 text-muted mb-4"></i>
+                    <h3 class="text-muted">Danh sách yêu thích trống</h3>
+                    <p class="text-muted mb-4">Bạn chưa thêm sản phẩm nào vào danh sách yêu thích.</p>
+                    <a href="{% url 'store' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-bag"></i> Khám phá sản phẩm
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Toggle wishlist
+function toggleWishlist(productId) {
+    fetch(`/wishlist/toggle/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Reload page to reflect changes
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Clear all wishlist
+function clearWishlist() {
+    if (confirm('Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi danh sách yêu thích?')) {
+        // You can implement this function to clear all wishlist items
+        const wishlistItems = document.querySelectorAll('[onclick^="toggleWishlist"]');
+        wishlistItems.forEach(button => {
+            const productId = button.getAttribute('onclick').match(/\d+/)[0];
+            toggleWishlist(productId);
+        });
+    }
+}
+
+// Add hover effects
+document.addEventListener('DOMContentLoaded', function() {
+    const productCards = document.querySelectorAll('.product-card');
+    
+    productCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.transition = 'all 0.3s ease';
+            this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.08)';
+        });
+    });
+});
+</script>
+
+<style>
+.product-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-title a {
+    color: #2c3e50;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.product-title a:hover {
+    color: #007bff;
+}
+
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+.sale-badge {
+    background: #dc3545;
+    color: white;
+}
+
+.new-badge {
+    background: #28a745;
+    color: white;
+}
+
+.empty-wishlist {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .product-card {
+        margin-bottom: 2rem;
+    }
+    
+    .product-actions .btn {
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+}
+</style>
+
+{% endblock %} 

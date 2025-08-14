@@ -1,0 +1,170 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ShopSneaker\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 12:00+0700\n"
+"PO-Revision-Date: 2024-01-01 12:00+0700\n"
+"Last-Translator: ShopSneaker Team\n"
+"Language-Team: Vietnamese\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: base.html:7
+msgid "Shop Sneaker"
+msgstr "Shop Sneaker"
+
+#: base.html:30
+msgid "News & Events"
+msgstr "Tin tức - Sự kiện"
+
+#: base.html:38
+msgid "Contact"
+msgstr "Liên hệ"
+
+#: base.html:53
+msgid "Theme"
+msgstr "Giao diện"
+
+#: base.html:57
+msgid "Light Mode"
+msgstr "Chế độ sáng"
+
+#: base.html:62
+msgid "Dark Mode"
+msgstr "Chế độ tối"
+
+#: base.html:91
+msgid "User Profile"
+msgstr "Thông tin người dùng"
+
+#: base.html:99
+msgid "Register"
+msgstr "Đăng ký"
+
+#: base.html:107
+msgid "Logout"
+msgstr "Đăng xuất"
+
+#: base.html:115
+msgid "Login"
+msgstr "Đăng nhập"
+
+#: store.html:15
+msgid "Sneaker Collection 2024"
+msgstr "Bộ sưu tập giày sneaker 2024"
+
+#: store.html:16
+msgid "Discover the latest sneaker collection from world's leading brands"
+msgstr "Khám phá bộ sưu tập giày sneaker mới nhất từ các thương hiệu hàng đầu thế giới"
+
+#: store.html:18
+msgid "Shop Now"
+msgstr "Mua sắm ngay"
+
+#: store.html:19
+msgid "Explore"
+msgstr "Khám phá"
+
+#: store.html:31
+msgid "Product Categories"
+msgstr "Danh mục sản phẩm"
+
+#: store.html:32
+msgid "Find by your favorite category"
+msgstr "Tìm kiếm theo danh mục yêu thích của bạn"
+
+#: store.html:52
+msgid "Best Sellers"
+msgstr "Sản phẩm bán chạy"
+
+#: store.html:53
+msgid "Most loved sneakers"
+msgstr "Những đôi giày được yêu thích nhất"
+
+#: store.html:95
+msgid "New Arrivals"
+msgstr "Sản phẩm mới nhất"
+
+#: store.html:96
+msgid "Latest sneaker models from top brands"
+msgstr "Cập nhật những mẫu giày mới nhất từ các thương hiệu hàng đầu"
+
+#: store.html:138
+msgid "View All Products"
+msgstr "Xem tất cả sản phẩm"
+
+#: store.html:148
+msgid "Brand Partners"
+msgstr "Thương hiệu đối tác"
+
+#: store.html:149
+msgid "We partner with world's leading brands"
+msgstr "Chúng tôi hợp tác với các thương hiệu hàng đầu thế giới"
+
+#: store.html:189
+msgid "Subscribe to Newsletter"
+msgstr "Đăng ký nhận tin tức"
+
+#: store.html:190
+msgid "Get updates on new products and special offers"
+msgstr "Nhận thông tin về sản phẩm mới và các ưu đãi đặc biệt"
+
+#: store.html:194
+msgid "Enter your email..."
+msgstr "Nhập email của bạn..."
+
+#: store.html:195
+msgid "Subscribe"
+msgstr "Đăng ký"
+
+#: store.html:197
+msgid "We respect your privacy and don't spam"
+msgstr "Chúng tôi tôn trọng quyền riêng tư của bạn và không spam email"
+
+#: store.html:208
+msgid "Free Shipping"
+msgstr "Giao hàng miễn phí"
+
+#: store.html:209
+msgid "Free shipping on orders over $50"
+msgstr "Miễn phí vận chuyển cho đơn hàng trên 500k"
+
+#: store.html:216
+msgid "Easy Returns"
+msgstr "Đổi trả dễ dàng"
+
+#: store.html:217
+msgid "30-day return policy"
+msgstr "Đổi trả trong vòng 30 ngày"
+
+#: store.html:224
+msgid "Secure Payment"
+msgstr "Thanh toán an toàn"
+
+#: store.html:225
+msgid "100% secure payment information"
+msgstr "Bảo mật thông tin thanh toán 100%"
+
+#: store.html:232
+msgid "24/7 Support"
+msgstr "Hỗ trợ 24/7"
+
+#: store.html:233
+msgid "Customer service team always ready"
+msgstr "Đội ngũ chăm sóc khách hàng luôn sẵn sàng"
+
+#: store.html:44
+msgid "View More"
+msgstr "Xem thêm"
+
+#: store.html:67
+msgid "View Details"
+msgstr "Xem chi tiết" 
